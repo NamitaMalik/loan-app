@@ -1,0 +1,10 @@
+{
+  "/api/calculate": {
+    "target": "https://homework.fdp.workers.dev/",
+    "secure": false,
+    "pathRewrite": {
+      "^/api/calculate": ""
+    },
+    "changeOrigin": true
+  }
+}

@@ -1,0 +1,84 @@
+@import "_variables";
+
+.loan-calculator {
+  max-width: 25%;
+  padding: 15px;
+  margin: auto;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  border: 1px solid $title;
+  .title {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    color: $title;
+    border-bottom: 1px solid $title;
+  }
+  .form-field {
+    display: flex;
+    justify-content: flex-end;
+    flex-direction: column;
+    margin-top: 20px;
+    input,
+    select {
+      margin-top: 20px;
+      font-size: 1rem;
+      color: $input-text--color;
+      background: $input-background;
+      padding: 0.5rem 0.5rem;
+      border: 1px solid $input-border;
+      border-radius: 3px;
+      flex: 2;
+    }
+    label {
+      color: $title;
+      flex: 1;
+    }
+    .text-danger {
+      color: red;
+    }
+  }
+  .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    button {
+      margin-top: 50px;
+      color: $button-text--color;
+      background: $title;
+      border: 1px solid $title;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      border-radius: 3px;
+      width: 40%;
+      &:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      &.secondary {
+        background: $secondary-button--color;
+        border: $secondary-button-border--color;
+      }
+    }
+  }
+  .message {
+    display: flex;
+    flex-direction: column;
+    height: 50px;
+    background-color: $title;
+    align-items: center;
+    justify-content: center;
+    color: $title-text--color;
+    margin-top: 20px;
+    padding: 20px;
+    margin: 20px -15px -15px;
+    .start-over {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+}

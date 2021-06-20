@@ -1,0 +1,101 @@
+<div class="loan-calculator">
+  <div class="title">Calculate Loan</div>
+  <div>
+      <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset()">
+      <div class="form-field">
+        <label> Monthly Income </label>
+        <input type="number" formControlName="monthlyIncome" min="0" />
+        <div>
+          <small
+            class="text-danger"
+            *ngIf="
+              form.get('monthlyIncome')?.touched &&
+              form.get('monthlyIncome')?.hasError('required')
+            "
+          >
+            This field is required.
+          </small>
+        </div>
+      </div>
+      <div class="form-field">
+        <label> Requested Amount </label>
+        <input type="number" formControlName="requestedAmount" min="0" />
+        <div>
+          <small
+            class="text-danger"
+            *ngIf="
+              form.get('requestedAmount')?.touched &&
+              form.get('requestedAmount')?.hasError('required')
+            "
+          >
+            This field is required.
+          </small>
+        </div>
+      </div>
+      <div class="form-field">
+        <label> Loan Term </label>
+        <select formControlName="loanTerm">
+          <option *ngFor="let option of loanTermOptions" [ngValue]="option.value">{{option.displayValue}}</option>
+        </select>
+        <div>
+          <small
+            class="text-danger"
+            *ngIf="
+              form.get('loanTerm')?.touched &&
+              form.get('loanTerm')?.hasError('required')
+            "
+          >
+            This field is required.
+          </small>
+        </div>
+      </div>
+      <div class="form-field">
+        <label> Children </label>
+        <select formControlName="children">
+          <option value="NONE">None</option>
+          <option value="SINGLE">Single</option>
+          <option value="MULTIPLE">Multiple</option>
+        </select>
+        <div>
+          <small
+            class="text-danger"
+            *ngIf="
+              form.get('children')?.touched &&
+              form.get('children')?.hasError('required')
+            "
+          >
+            This field is required.
+          </small>
+        </div>
+      </div>
+      <div class="form-field">
+        <label> Co-applicant </label>
+        <select formControlName="coapplicant">
+          <option value="NONE">None</option>
+          <option value="SINGLE_BORROWER">Single</option>
+          <option value="MULTIPLE_BORROWERS">Multiple</option>
+        </select>
+        <div>
+          <small
+            class="text-danger"
+            *ngIf="
+              form.get('children')?.touched &&
+              form.get('children')?.hasError('required')
+            "
+          >
+            This field is required.
+          </small>
+        </div>
+      </div>
+      <div class="actions" *ngIf="!loanSuccessMessage.length">
+        <button class="secondary" type="reset">Reset</button>
+        <button type="submit" [disabled]="form.status === 'INVALID'">
+          Submit
+        </button>
+      </div>
+      <div class="message" *ngIf="loanSuccessMessage.length">
+        <span>{{loanSuccessMessage}}</span><span class="start-over" (click)="reset()">Click Here!</span>
+      </div>
+    </form>
+  </div>
+</div>
