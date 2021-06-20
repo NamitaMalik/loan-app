@@ -1,3 +1,10 @@
 export const API_URL = {
-  CALCULATE_LOAN: '/api/calculate'
+  CALCULATE_LOAN: '/api/calculate',
+};
+
+export enum LOAN_CALCULATOR_PARAMETERS {
+  MIN_MONTHLY_INCOME = 500,
+  MIN_REQUESTED_AMOUNT = 20000,
+  MIN_LOAN_TERM = 36,
+  MAX_LOAN_TERM = 360,
 }

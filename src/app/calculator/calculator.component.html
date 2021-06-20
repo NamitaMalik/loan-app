@@ -1,7 +1,7 @@
 <div class="loan-calculator">
   <div class="title">Calculate Loan</div>
   <div>
-      <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset()">
+    <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset()">
       <div class="form-field">
         <label> Monthly Income </label>
         <input type="number" formControlName="monthlyIncome" min="0" />
@@ -10,10 +10,14 @@
             class="text-danger"
             *ngIf="
               form.get('monthlyIncome')?.touched &&
-              form.get('monthlyIncome')?.hasError('required')
+              form.get('monthlyIncome')?.hasError('min')
             "
           >
-            This field is required.
+            Monthly income should be minimum
+            {{ loanCalculatorParameters.MIN_MONTHLY_INCOME }}.
+          </small>
+          <small class="text-danger" *ngIf="serverErrorMessages.monthlyIncome">
+            {{ serverErrorMessages.monthlyIncome }}
           </small>
         </div>
       </div>
@@ -24,30 +28,32 @@
           <small
             class="text-danger"
             *ngIf="
-              form.get('requestedAmount')?.touched &&
-              form.get('requestedAmount')?.hasError('required')
+              form.get('monthlyIncome')?.touched &&
+              form.get('monthlyIncome')?.hasError('min')
             "
           >
-            This field is required.
+            Minimum request amount should be
+            {{ loanCalculatorParameters.MIN_REQUESTED_AMOUNT }}.
+          </small>
+          <small
+            class="text-danger"
+            *ngIf="serverErrorMessages.requestedAmount"
+          >
+            {{ serverErrorMessages.requestedAmount }}
           </small>
         </div>
       </div>
       <div class="form-field">
         <label> Loan Term </label>
         <select formControlName="loanTerm">
-          <option *ngFor="let option of loanTermOptions" [ngValue]="option.value">{{option.displayValue}}</option>
-        </select>
-        <div>
-          <small
-            class="text-danger"
-            *ngIf="
-              form.get('loanTerm')?.touched &&
-              form.get('loanTerm')?.hasError('required')
-            "
+          <option
+            *ngFor="let option of loanTermOptions"
+            [ngValue]="option.value"
           >
-            This field is required.
-          </small>
-        </div>
+            {{ option.displayValue }}
+          </option>
+        </select>
+        <div></div>
       </div>
       <div class="form-field">
         <label> Children </label>
@@ -57,14 +63,8 @@
           <option value="MULTIPLE">Multiple</option>
         </select>
         <div>
-          <small
-            class="text-danger"
-            *ngIf="
-              form.get('children')?.touched &&
-              form.get('children')?.hasError('required')
-            "
-          >
-            This field is required.
+          <small class="text-danger" *ngIf="serverErrorMessages.children">
+            {{ serverErrorMessages.children }}
           </small>
         </div>
       </div>
@@ -76,14 +76,8 @@
           <option value="MULTIPLE_BORROWERS">Multiple</option>
         </select>
         <div>
-          <small
-            class="text-danger"
-            *ngIf="
-              form.get('children')?.touched &&
-              form.get('children')?.hasError('required')
-            "
-          >
-            This field is required.
+          <small class="text-danger" *ngIf="serverErrorMessages.coapplicant">
+            {{ serverErrorMessages.coapplicant }}
           </small>
         </div>
       </div>
@@ -94,7 +88,8 @@
         </button>
       </div>
       <div class="message" *ngIf="loanSuccessMessage.length">
-        <span>{{loanSuccessMessage}}</span><span class="start-over" (click)="reset()">Click Here!</span>
+        <span>{{ loanSuccessMessage }}</span
+        ><span class="start-over" (click)="reset()">Click Here!</span>
       </div>
     </form>
   </div>
