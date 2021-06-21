@@ -10,8 +10,3 @@ export interface OfferedLoanData {
   loanAmount: number;
   interestRate: number;
 }
-
-export interface LoanTermOption {
-  value: number;
-  displayValue: string;
-}

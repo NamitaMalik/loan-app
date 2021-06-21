@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { CalculatorService } from './calculator.service';
-import { LoanTermOption, OfferedLoanData } from './calculator';
+import { OfferedLoanData } from './calculator';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
+import { LOAN_FORM_FIELDS } from '../loan-calculator.form';
+import { FORM_FIELDS, FormField } from '../../../form';
 
 @Component({
   selector: 'app-calculator',
@@ -12,39 +13,30 @@ import { LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
 })
 export class CalculatorComponent {
   form: FormGroup;
-  loanTermOptions: LoanTermOption[];
+  formFieldType = FORM_FIELDS;
   loanSuccessMessage: string = '';
   serverErrorMessages: any = {};
-  loanCalculatorParameters = LOAN_CALCULATOR_PARAMETERS;
+  formFields: FormField[];
 
   constructor(
     private _fb: FormBuilder,
     private calcuatorService: CalculatorService
   ) {
-    this.loanTermOptions = this.calcuatorService.buildLoanTermOptions();
+    this.formFields = LOAN_FORM_FIELDS(
+      this.calcuatorService.buildLoanTermOptions()
+    );
     this.form = this.buildForm();
   }
 
   buildForm(): FormGroup {
-    return this._fb.group({
-      monthlyIncome: [
-        undefined,
-        [Validators.min(this.loanCalculatorParameters.MIN_MONTHLY_INCOME)],
-      ],
-      requestedAmount: [
-        undefined,
-        [Validators.min(this.loanCalculatorParameters.MIN_REQUESTED_AMOUNT)],
-      ],
-      loanTerm: [
-        undefined,
-        [
-          Validators.min(this.loanCalculatorParameters.MIN_LOAN_TERM),
-          Validators.max(this.loanCalculatorParameters.MAX_LOAN_TERM),
-        ],
-      ],
-      children: [undefined],
-      coapplicant: [undefined],
+    const form = this._fb.group([]);
+    this.formFields.forEach((formField) => {
+      form.addControl(
+        formField.formControlName,
+        this._fb.control(undefined, { validators: formField.validators })
+      );
     });
+    return form;
   }
 
   submit(): void {

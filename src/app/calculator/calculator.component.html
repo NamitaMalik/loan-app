@@ -2,82 +2,49 @@
   <div class="title">Calculate Loan</div>
   <div>
     <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset()">
-      <div class="form-field">
-        <label> Monthly Income </label>
-        <input type="number" formControlName="monthlyIncome" min="0" />
+      <div class="form-field" *ngFor="let formField of formFields">
+        <label> {{ formField.label }}</label>
+        <ng-container [ngSwitch]="formField.fieldType">
+          <input
+            *ngSwitchCase="formFieldType.INPUT"
+            [formControlName]="formField.formControlName"
+          />
+          <select
+            *ngSwitchCase="formFieldType.SELECT"
+            [formControlName]="formField.formControlName"
+          >
+            <option
+              *ngFor="let option of formField.options"
+              [ngValue]="option.value"
+            >
+              {{ option.label }}
+            </option>
+          </select>
+        </ng-container>
         <div>
           <small
             class="text-danger"
             *ngIf="
-              form.get('monthlyIncome')?.touched &&
-              form.get('monthlyIncome')?.hasError('min')
+              form.get(formField.formControlName)?.touched &&
+              form.get(formField.formControlName)?.hasError('required')
             "
           >
-            Monthly income should be minimum
-            {{ loanCalculatorParameters.MIN_MONTHLY_INCOME }}.
+            Please enter {{ formField.label }}
           </small>
-          <small class="text-danger" *ngIf="serverErrorMessages.monthlyIncome">
-            {{ serverErrorMessages.monthlyIncome }}
-          </small>
-        </div>
-      </div>
-      <div class="form-field">
-        <label> Requested Amount </label>
-        <input type="number" formControlName="requestedAmount" min="0" />
-        <div>
           <small
             class="text-danger"
             *ngIf="
-              form.get('monthlyIncome')?.touched &&
-              form.get('monthlyIncome')?.hasError('min')
+              form.get(formField.formControlName)?.touched &&
+              form.get(formField.formControlName)?.hasError('min')
             "
           >
-            Minimum request amount should be
-            {{ loanCalculatorParameters.MIN_REQUESTED_AMOUNT }}.
+            {{ formField.label + " should be minimum" }}
           </small>
           <small
             class="text-danger"
-            *ngIf="serverErrorMessages.requestedAmount"
+            *ngIf="serverErrorMessages[formField.formControlName]"
           >
-            {{ serverErrorMessages.requestedAmount }}
-          </small>
-        </div>
-      </div>
-      <div class="form-field">
-        <label> Loan Term </label>
-        <select formControlName="loanTerm">
-          <option
-            *ngFor="let option of loanTermOptions"
-            [ngValue]="option.value"
-          >
-            {{ option.displayValue }}
-          </option>
-        </select>
-        <div></div>
-      </div>
-      <div class="form-field">
-        <label> Children </label>
-        <select formControlName="children">
-          <option value="NONE">None</option>
-          <option value="SINGLE">Single</option>
-          <option value="MULTIPLE">Multiple</option>
-        </select>
-        <div>
-          <small class="text-danger" *ngIf="serverErrorMessages.children">
-            {{ serverErrorMessages.children }}
-          </small>
-        </div>
-      </div>
-      <div class="form-field">
-        <label> Co-applicant </label>
-        <select formControlName="coapplicant">
-          <option value="NONE">None</option>
-          <option value="SINGLE_BORROWER">Single</option>
-          <option value="MULTIPLE_BORROWERS">Multiple</option>
-        </select>
-        <div>
-          <small class="text-danger" *ngIf="serverErrorMessages.coapplicant">
-            {{ serverErrorMessages.coapplicant }}
+            {{ serverErrorMessages[formField.formControlName] }}
           </small>
         </div>
       </div>
