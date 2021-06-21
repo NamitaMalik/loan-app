@@ -1,10 +1,21 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ValidatorFn,
+} from '@angular/forms';
 import { CalculatorService } from './calculator.service';
 import { OfferedLoanData } from './calculator';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LOAN_FORM_FIELDS } from '../loan-calculator.form';
-import { FORM_FIELDS, FormField } from '../../../form';
+import {
+  FORM_FIELDS,
+  FormField,
+  FormValidatorOption,
+  FormValidatorTypes,
+  validators,
+} from '../../../form';
+import { SERVER_ERROR_CODES } from '../app.constant';
 
 @Component({
   selector: 'app-calculator',
@@ -15,7 +26,8 @@ export class CalculatorComponent {
   form: FormGroup;
   formFieldType = FORM_FIELDS;
   loanSuccessMessage: string = '';
-  serverErrorMessages: any = {};
+  serverErrorMessage: string = '';
+  fieldLevelErrorMessages: any = {};
   formFields: FormField[];
 
   constructor(
@@ -31,38 +43,57 @@ export class CalculatorComponent {
   buildForm(): FormGroup {
     const form = this._fb.group([]);
     this.formFields.forEach((formField) => {
+      let validators: ValidatorFn[] = [];
+      formField.validators?.forEach((validator) => {
+        validators = [...validators, this.buildValidator(validator)];
+      });
       form.addControl(
         formField.formControlName,
-        this._fb.control(undefined, { validators: formField.validators })
+        this._fb.control(null, { validators })
       );
     });
     return form;
   }
 
+  buildValidator(formValidatorOptions: FormValidatorOption): ValidatorFn {
+    const key = <FormValidatorTypes>Object.keys(formValidatorOptions)[0];
+    return validators[key](key, formValidatorOptions);
+  }
+
   submit(): void {
+    this.fieldLevelErrorMessages = {};
     this.calcuatorService.submitRequest(this.form.value).subscribe(
       (response: OfferedLoanData) => {
+        this.form.markAsUntouched();
+        this.form.disable();
         this.loanSuccessMessage = `Congratulations! You can be offered ${
           response.loanAmount / 1000
         } at the interest rate of ${response.interestRate / 1000}. Do you
       want to calculate again?`;
       },
       (error: HttpErrorResponse) => {
-        const errorFields = error.error?.fields;
+        this.form.markAsUntouched();
+        const errorFields: { params: string; message: string }[] =
+          error.error?.fields;
         if (errorFields.length) {
-          errorFields.forEach(
-            (errorField: { params: string; message: string }) => {
-              this.serverErrorMessages[errorField.params] = errorField.message;
-            }
-          );
+          errorFields.forEach((errorField) => {
+            this.fieldLevelErrorMessages[errorField.params] =
+              errorField.message;
+          });
+        }
+        const generalError: { code: string; message: string } =
+          error.error?.general;
+        if (generalError) {
+          this.serverErrorMessage = SERVER_ERROR_CODES[generalError.code];
         }
       }
     );
   }
 
   reset(): void {
+    this.form.enable();
     this.form.reset();
     this.loanSuccessMessage = '';
-    this.serverErrorMessages = {};
+    this.fieldLevelErrorMessages = {};
   }
 }

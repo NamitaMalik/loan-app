@@ -1,16 +1,29 @@
-import { ValidatorFn } from '@angular/forms';
+import { Validators } from '@angular/forms';
 
-type FORM_FIELD_TYPES = FORM_FIELDS.INPUT | FORM_FIELDS.SELECT;
+type FORM_FIELD_TYPES = FORM_FIELDS.Input | FORM_FIELDS.Select;
 
 export enum FORM_FIELDS {
-  INPUT = 'input',
-  SELECT = 'select',
+  Input = 'input',
+  Select = 'select',
 }
 
 export type Options = {
   label: string;
-  value: string | boolean | number;
+  value: string | boolean | number | null;
 };
+
+export enum FormValidatorTypes {
+  Required = 'required',
+  MinValue = 'min',
+  MaxValue = 'max',
+}
+
+export type FormValidatorType =
+  | FormValidatorTypes.Required
+  | FormValidatorTypes.MinValue
+  | FormValidatorTypes.MaxValue;
+
+export type FormValidatorOption<> = Partial<Record<FormValidatorType, number|boolean>>
 
 export interface FormField {
   formControlName: string;
@@ -18,5 +31,13 @@ export interface FormField {
   fieldType: FORM_FIELD_TYPES;
   options?: Options[];
   type?: string;
-  validators?: ValidatorFn[];
+  validators?: FormValidatorOption[];
 }
+
+export const validators = {
+  [FormValidatorTypes.Required]: () => Validators.required,
+  [FormValidatorTypes.MaxValue]: (k: FormValidatorTypes, v: FormValidatorOption) =>
+    Validators.max(<number>v[k]),
+  [FormValidatorTypes.MinValue]: (k: FormValidatorTypes, v: FormValidatorOption) =>
+    Validators.min(<number>v[k]),
+};

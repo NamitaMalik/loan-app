@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { API_URL } from '../app.constant';
+import { API_URL, LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
 import { LoanCalculatorFormData } from './calculator';
 import { Observable } from 'rxjs';
 import { Options } from '../../../form';
@@ -19,10 +19,10 @@ export class CalculatorService {
     return this.http.post(API_URL.CALCULATE_LOAN, dataToSend, { headers });
   }
 
-  buildLoanTermOptions(minimumYears = 3, maximumYears = 30): Options[] {
+  buildLoanTermOptions(): Options[] {
     const monthsInYear = 12;
     const options = [];
-    for (let i = minimumYears; i <= maximumYears; i++) {
+    for (let i = LOAN_CALCULATOR_PARAMETERS.MIN_LOAN_TERM; i <= LOAN_CALCULATOR_PARAMETERS.MAX_LOAN_TERM; i++) {
       options.push({ value: i * monthsInYear, label: `${i} years` });
     }
     return options;

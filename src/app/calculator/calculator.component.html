@@ -6,11 +6,12 @@
         <label> {{ formField.label }}</label>
         <ng-container [ngSwitch]="formField.fieldType">
           <input
-            *ngSwitchCase="formFieldType.INPUT"
+            *ngSwitchCase="formFieldType.Input"
+            [type]="formField.type"
             [formControlName]="formField.formControlName"
           />
           <select
-            *ngSwitchCase="formFieldType.SELECT"
+            *ngSwitchCase="formFieldType.Select"
             [formControlName]="formField.formControlName"
           >
             <option
@@ -21,34 +22,35 @@
             </option>
           </select>
         </ng-container>
-        <div>
+        <div *ngIf="form.get(formField.formControlName)?.touched">
           <small
             class="text-danger"
-            *ngIf="
-              form.get(formField.formControlName)?.touched &&
-              form.get(formField.formControlName)?.hasError('required')
-            "
+            *ngIf="form.get(formField.formControlName)?.hasError('required')"
           >
             Please enter {{ formField.label }}
           </small>
           <small
             class="text-danger"
-            *ngIf="
-              form.get(formField.formControlName)?.touched &&
-              form.get(formField.formControlName)?.hasError('min')
-            "
+            *ngIf="form.get(formField.formControlName)?.hasError('min')"
           >
-            {{ formField.label + " should be minimum" }}
-          </small>
-          <small
-            class="text-danger"
-            *ngIf="serverErrorMessages[formField.formControlName]"
-          >
-            {{ serverErrorMessages[formField.formControlName] }}
+            Minimum {{ formField.label }} should be
+            {{ form.get(formField.formControlName)?.errors?.min?.min }}
           </small>
         </div>
+        <small
+          class="text-danger"
+          *ngIf="
+            fieldLevelErrorMessages[formField.formControlName] &&
+            !form.get(formField.formControlName)?.touched
+          "
+        >
+          {{ fieldLevelErrorMessages[formField.formControlName] }}
+        </small>
       </div>
-      <div class="actions" *ngIf="!loanSuccessMessage.length">
+      <div
+        class="actions"
+        *ngIf="!loanSuccessMessage.length && !serverErrorMessage"
+      >
         <button class="secondary" type="reset">Reset</button>
         <button type="submit" [disabled]="form.status === 'INVALID'">
           Submit
@@ -57,6 +59,9 @@
       <div class="message" *ngIf="loanSuccessMessage.length">
         <span>{{ loanSuccessMessage }}</span
         ><span class="start-over" (click)="reset()">Click Here!</span>
+      </div>
+      <div class="error-message" *ngIf="serverErrorMessage">
+        <span>{{ serverErrorMessage }}</span>
       </div>
     </form>
   </div>

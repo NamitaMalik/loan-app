@@ -1,0 +1,14 @@
+@import "_variables";
+
+@mixin message($color) {
+  display: flex;
+  flex-direction: column;
+  height: 50px;
+  background-color: $color;
+  align-items: center;
+  justify-content: center;
+  color: $title-text--color;
+  margin-top: 20px;
+  padding: 20px;
+  margin: 20px -15px -15px;
+}
