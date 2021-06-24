@@ -1,21 +1,15 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { CalculatorService } from './calculator.service';
-import { OfferedLoanData } from './calculator';
+import { FieldError, OfferedLoanData } from './calculator';
 import { HttpErrorResponse } from '@angular/common/http';
 import { LOAN_FORM_FIELDS } from '../loan-calculator.form';
-import {
-  FORM_FIELDS,
-  FormField,
-  FormValidatorOption,
-  FormValidatorTypes,
-  Options,
-  validators,
-} from '../../../form';
+import { FORM_FIELDS, FormField, Options } from '../../../form';
 import {
   LOAN_CALCULATOR_PARAMETERS,
   SERVER_ERROR_CODES,
 } from '../app.constant';
+import { FormService } from '../form.service';
 
 @Component({
   selector: 'app-calculator',
@@ -25,67 +19,17 @@ import {
 export class CalculatorComponent {
   form: FormGroup;
   formFieldType = FORM_FIELDS;
+  formFields: FormField[];
   loanSuccessMessage: string = '';
   serverErrorMessage: string = '';
-  fieldLevelErrorMessages: any = {};
-  formFields: FormField[];
+  fieldLevelErrorMessages: Record<string, string> = {};
 
   constructor(
-    private _fb: FormBuilder,
-    private calcuatorService: CalculatorService
+    private formService: FormService,
+    private calculatorService: CalculatorService
   ) {
     this.formFields = LOAN_FORM_FIELDS(this.buildLoanTermOptions());
-    this.form = this.buildForm();
-  }
-
-  buildForm(): FormGroup {
-    const form = this._fb.group([]);
-    this.formFields.forEach((formField) => {
-      let validators: ValidatorFn[] = [];
-      formField.validators?.forEach((validator) => {
-        validators = [...validators, this.buildValidator(validator)];
-      });
-      form.addControl(
-        formField.formControlName,
-        this._fb.control(null, { validators })
-      );
-    });
-    return form;
-  }
-
-  buildValidator(formValidatorOptions: FormValidatorOption): ValidatorFn {
-    const key = <FormValidatorTypes>Object.keys(formValidatorOptions)[0];
-    return validators[key](key, formValidatorOptions);
-  }
-
-  submit(): void {
-    this.fieldLevelErrorMessages = {};
-    this.calcuatorService.submitLoanRequest(this.form.value).subscribe(
-      (response: OfferedLoanData) => {
-        this.form.markAsUntouched();
-        this.form.disable();
-        this.loanSuccessMessage = `Congratulations! You can be offered ${
-          response.loanAmount / 1000
-        } at the interest rate of ${response.interestRate / 1000}. Do you
-      want to re-calculate?`;
-      },
-      (error: HttpErrorResponse) => {
-        this.form.markAsUntouched();
-        const errorFields: { params: string; message: string }[] =
-          error.error?.fields;
-        if (errorFields.length) {
-          errorFields.forEach((errorField) => {
-            this.fieldLevelErrorMessages[errorField.params] =
-              errorField.message;
-          });
-        }
-        const generalError: { code: string; message: string } =
-          error.error?.general;
-        if (generalError) {
-          this.serverErrorMessage = SERVER_ERROR_CODES[generalError.code];
-        }
-      }
-    );
+    this.form = this.formService.buildForm(this.formFields);
   }
 
   buildLoanTermOptions(): Options[] {
@@ -101,6 +45,39 @@ export class CalculatorComponent {
       });
     }
     return options;
+  }
+
+  submitLoanRequest(): void {
+    this.fieldLevelErrorMessages = {};
+    this.calculatorService.submitLoanRequest(this.form.value).subscribe(
+      (response) => this.onSuccess(response),
+      (error: HttpErrorResponse) => this.onError(error)
+    );
+  }
+
+  onSuccess(response: OfferedLoanData) {
+    this.form.markAsUntouched();
+    this.form.disable();
+    this.loanSuccessMessage = `Congratulations! You can be offered ${this.calculatorService.getFormattedAmount(
+      response.loanAmount
+    )} at the interest rate of ${this.calculatorService.getFormattedAmount(
+      response.interestRate
+    )}%. Do you want to re-calculate?`;
+  }
+
+  onError(error: HttpErrorResponse) {
+    this.form.markAsUntouched();
+    const fieldsWithErrors: FieldError[] = error.error?.fields;
+    if (fieldsWithErrors?.length) {
+      fieldsWithErrors.forEach((errorField) => {
+        this.fieldLevelErrorMessages[errorField.params] = errorField.message;
+      });
+    }
+    const generalError: { code: string; message: string } =
+      error.error?.general;
+    if (generalError) {
+      this.serverErrorMessage = SERVER_ERROR_CODES[generalError.code];
+    }
   }
 
   reset(resetForm?: boolean): void {

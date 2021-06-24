@@ -10,3 +10,8 @@ export interface OfferedLoanData {
   loanAmount: number;
   interestRate: number;
 }
+
+export interface FieldError {
+  params: string;
+  message: string;
+}

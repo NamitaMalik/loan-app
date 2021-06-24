@@ -18,3 +18,27 @@ export const MOCK_RESPONSE = {
   loanAmount: 123000000,
   interestRate: 2500,
 };
+
+export const MOCK_ERROR_RESPONSE = {
+  error: {
+    fields: [
+      {
+        params: 'monthlyIncome',
+        message: 'Minimum monthly income should be 2000',
+      },
+    ],
+  },
+};
+
+export const MOCK_GENERAL_ERROR_RESPONSE = {
+  error: {
+    general: {
+      code: 'PARAMETERS MISSING',
+      message: 'Unfortunately something went wrong',
+    },
+  },
+};
+
+export const MOCK_FIELD_LEVEL_ERROR_MESSAGES = {
+  monthlyIncome: 'Minimum monthly income should be 2000',
+};

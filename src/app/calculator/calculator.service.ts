@@ -25,4 +25,8 @@ export class CalculatorService {
     dataToSend.requestedAmount = dataToSend.requestedAmount * 1000;
     return dataToSend;
   }
+
+  getFormattedAmount(amount: number): number{
+    return amount/1000;
+  }
 }

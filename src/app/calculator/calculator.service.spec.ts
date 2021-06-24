@@ -24,7 +24,7 @@ describe('CalculatorService', () => {
     httpTestingController = TestBed.inject(HttpTestingController);
   });
 
-  it('should be created', () => {
+  it('is created', () => {
     expect(service).toBeTruthy();
   });
 
