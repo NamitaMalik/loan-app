@@ -23,7 +23,9 @@ export type FormValidatorType =
   | FormValidatorTypes.MinValue
   | FormValidatorTypes.MaxValue;
 
-export type FormValidatorOption<> = Partial<Record<FormValidatorType, number|boolean>>
+export type FormValidatorOption = Partial<
+  Record<FormValidatorType, number | boolean>
+>;
 
 export interface FormField {
   formControlName: string;
@@ -36,8 +38,12 @@ export interface FormField {
 
 export const validators = {
   [FormValidatorTypes.Required]: () => Validators.required,
-  [FormValidatorTypes.MaxValue]: (k: FormValidatorTypes, v: FormValidatorOption) =>
-    Validators.max(<number>v[k]),
-  [FormValidatorTypes.MinValue]: (k: FormValidatorTypes, v: FormValidatorOption) =>
-    Validators.min(<number>v[k]),
+  [FormValidatorTypes.MaxValue]: (
+    k: FormValidatorTypes,
+    v: FormValidatorOption
+  ) => Validators.max(<number>v[k]),
+  [FormValidatorTypes.MinValue]: (
+    k: FormValidatorTypes,
+    v: FormValidatorOption
+  ) => Validators.min(<number>v[k]),
 };

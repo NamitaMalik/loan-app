@@ -1,5 +1,5 @@
-import { FORM_FIELDS, FormField, Options } from '../../form';
-import { LOAN_CALCULATOR_PARAMETERS } from './app.constant';
+import { FORM_FIELDS, FormField, Options } from '../../../form';
+import { LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
 
 export const LOAN_FORM_FIELDS = (loanTermOptions: Options[]): FormField[] => [
   {

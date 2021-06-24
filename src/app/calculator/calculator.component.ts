@@ -3,13 +3,13 @@ import { FormGroup } from '@angular/forms';
 import { CalculatorService } from './calculator.service';
 import { FieldError, OfferedLoanData } from './calculator';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LOAN_FORM_FIELDS } from '../loan-calculator.form';
 import { FORM_FIELDS, FormField, Options } from '../../../form';
 import {
   LOAN_CALCULATOR_PARAMETERS,
   SERVER_ERROR_CODES,
 } from '../app.constant';
 import { FormService } from '../form.service';
+import { LOAN_FORM_FIELDS } from './loan-calculator.form.constant';
 
 @Component({
   selector: 'app-calculator',

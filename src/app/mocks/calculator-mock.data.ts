@@ -1,3 +1,6 @@
+import { FORM_FIELDS } from '../../../form';
+import { LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
+
 export const MOCK_DATA_TO_SEND = {
   monthlyIncome: 1000,
   requestedAmount: 20000,
@@ -42,3 +45,16 @@ export const MOCK_GENERAL_ERROR_RESPONSE = {
 export const MOCK_FIELD_LEVEL_ERROR_MESSAGES = {
   monthlyIncome: 'Minimum monthly income should be 2000',
 };
+
+export const MOCK_FORM_FIELDS = [
+  {
+    formControlName: 'monthlyIncome',
+    label: 'Monthly Income',
+    fieldType: FORM_FIELDS.Input,
+    type: 'number',
+    validators: [
+      { required: true },
+      { min: LOAN_CALCULATOR_PARAMETERS.MIN_MONTHLY_INCOME },
+    ],
+  },
+];
