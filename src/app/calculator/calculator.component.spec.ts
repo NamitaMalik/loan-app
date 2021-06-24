@@ -135,6 +135,18 @@ describe('CalculatorComponent', () => {
           ' subject PARAMETERS MISSING for earliest resolution.'
       );
     });
+
+    it('does not set general error when error is undefined', () => {
+      const error = new HttpErrorResponse({});
+      component.onError(error);
+      expect(component.serverErrorMessage).toBe('');
+    });
+
+    it('does not set field level error messages when error is undefined', () => {
+      const error = new HttpErrorResponse({});
+      component.onError(error);
+      expect(component.fieldLevelErrorMessages).toEqual({});
+    });
   });
 
   describe('reset', () => {
