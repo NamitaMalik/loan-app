@@ -18,7 +18,7 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng test --code-coverage` for the coverage report.
 
-##To Do
+## To Do
 Further improvements that can be done in the app:
 - Move validation messages to a message component
 - Add a form component
