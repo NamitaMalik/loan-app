@@ -3,6 +3,7 @@ export const API_URL = {
 };
 
 export enum LOAN_CALCULATOR_PARAMETERS {
+  MONTHS_IN_YEAR = 12,
   MIN_MONTHLY_INCOME = 500,
   MIN_REQUESTED_AMOUNT = 20000,
   MIN_LOAN_TERM = 3,
@@ -14,3 +15,5 @@ export const SERVER_ERROR_CODES: Record<string, string> = {
     'Unfortunately something went wrong. Please email us at contact@myfakeloanapp.com with subject PARAMETERS' +
     ' MISSING for earliest resolution.',
 };
+
+export const API_KEY = ' swb-222222';

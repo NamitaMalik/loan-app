@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { API_URL, LOAN_CALCULATOR_PARAMETERS } from '../app.constant';
+import { API_KEY, API_URL } from '../app.constant';
 import { LoanCalculatorFormData } from './calculator';
 import { Observable } from 'rxjs';
-import { Options } from '../../../form';
 
 @Injectable({
   providedIn: 'root',
@@ -11,20 +10,19 @@ import { Options } from '../../../form';
 export class CalculatorService {
   constructor(private http: HttpClient) {}
 
-  submitRequest(data: LoanCalculatorFormData): Observable<any> {
-    const dataToSend = { ...data };
-    dataToSend.monthlyIncome = dataToSend.monthlyIncome * 1000;
-    dataToSend.requestedAmount = dataToSend.requestedAmount * 1000;
-    const headers = new HttpHeaders().set('X-API-KEY', ' swb-222222');
-    return this.http.post(API_URL.CALCULATE_LOAN, dataToSend, { headers });
+  submitLoanRequest(data: LoanCalculatorFormData): Observable<any> {
+    const headers = new HttpHeaders().set('X-API-KEY', API_KEY);
+    return this.http.post(API_URL.CALCULATE_LOAN, this.formatDataToSend(data), {
+      headers,
+    });
   }
 
-  buildLoanTermOptions(): Options[] {
-    const monthsInYear = 12;
-    const options = [];
-    for (let i = LOAN_CALCULATOR_PARAMETERS.MIN_LOAN_TERM; i <= LOAN_CALCULATOR_PARAMETERS.MAX_LOAN_TERM; i++) {
-      options.push({ value: i * monthsInYear, label: `${i} years` });
-    }
-    return options;
+  formatDataToSend(
+    dataToFormat: LoanCalculatorFormData
+  ): LoanCalculatorFormData {
+    const dataToSend = { ...dataToFormat };
+    dataToSend.monthlyIncome = dataToSend.monthlyIncome * 1000;
+    dataToSend.requestedAmount = dataToSend.requestedAmount * 1000;
+    return dataToSend;
   }
 }

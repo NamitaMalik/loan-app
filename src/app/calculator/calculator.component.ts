@@ -1,9 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ValidatorFn,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, ValidatorFn } from '@angular/forms';
 import { CalculatorService } from './calculator.service';
 import { OfferedLoanData } from './calculator';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -13,9 +9,13 @@ import {
   FormField,
   FormValidatorOption,
   FormValidatorTypes,
+  Options,
   validators,
 } from '../../../form';
-import { SERVER_ERROR_CODES } from '../app.constant';
+import {
+  LOAN_CALCULATOR_PARAMETERS,
+  SERVER_ERROR_CODES,
+} from '../app.constant';
 
 @Component({
   selector: 'app-calculator',
@@ -34,9 +34,7 @@ export class CalculatorComponent {
     private _fb: FormBuilder,
     private calcuatorService: CalculatorService
   ) {
-    this.formFields = LOAN_FORM_FIELDS(
-      this.calcuatorService.buildLoanTermOptions()
-    );
+    this.formFields = LOAN_FORM_FIELDS(this.buildLoanTermOptions());
     this.form = this.buildForm();
   }
 
@@ -62,7 +60,7 @@ export class CalculatorComponent {
 
   submit(): void {
     this.fieldLevelErrorMessages = {};
-    this.calcuatorService.submitRequest(this.form.value).subscribe(
+    this.calcuatorService.submitLoanRequest(this.form.value).subscribe(
       (response: OfferedLoanData) => {
         this.form.markAsUntouched();
         this.form.disable();
@@ -90,9 +88,24 @@ export class CalculatorComponent {
     );
   }
 
+  buildLoanTermOptions(): Options[] {
+    const options = [];
+    for (
+      let i = LOAN_CALCULATOR_PARAMETERS.MIN_LOAN_TERM;
+      i <= LOAN_CALCULATOR_PARAMETERS.MAX_LOAN_TERM;
+      i++
+    ) {
+      options.push({
+        value: i * LOAN_CALCULATOR_PARAMETERS.MONTHS_IN_YEAR,
+        label: `${i} years`,
+      });
+    }
+    return options;
+  }
+
   reset(resetForm?: boolean): void {
     this.form.enable();
-    if(resetForm) {
+    if (resetForm) {
       this.form.reset();
     }
     this.loanSuccessMessage = '';

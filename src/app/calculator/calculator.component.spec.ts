@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CalculatorComponent } from './calculator.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('CalculatorComponent', () => {
   let component: CalculatorComponent;
@@ -8,9 +10,9 @@ describe('CalculatorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CalculatorComponent ]
-    })
-    .compileComponents();
+      declarations: [CalculatorComponent],
+      imports: [ReactiveFormsModule, HttpClientTestingModule],
+    }).compileComponents();
   });
 
   beforeEach(() => {
