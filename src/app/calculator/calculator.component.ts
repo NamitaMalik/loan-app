@@ -69,7 +69,7 @@ export class CalculatorComponent {
         this.loanSuccessMessage = `Congratulations! You can be offered ${
           response.loanAmount / 1000
         } at the interest rate of ${response.interestRate / 1000}. Do you
-      want to calculate again?`;
+      want to re-calculate?`;
       },
       (error: HttpErrorResponse) => {
         this.form.markAsUntouched();
@@ -90,9 +90,11 @@ export class CalculatorComponent {
     );
   }
 
-  reset(): void {
+  reset(resetForm?: boolean): void {
     this.form.enable();
-    this.form.reset();
+    if(resetForm) {
+      this.form.reset();
+    }
     this.loanSuccessMessage = '';
     this.fieldLevelErrorMessages = {};
   }

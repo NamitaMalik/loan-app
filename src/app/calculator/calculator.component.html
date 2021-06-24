@@ -1,7 +1,7 @@
 <div class="loan-calculator">
   <div class="title">Calculate Loan</div>
   <div>
-    <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset()">
+    <form [formGroup]="form" (ngSubmit)="submit()" (reset)="reset(true)">
       <div class="form-field" *ngFor="let formField of formFields">
         <label> {{ formField.label }}</label>
         <ng-container [ngSwitch]="formField.fieldType">
