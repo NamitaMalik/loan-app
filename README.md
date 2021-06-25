@@ -24,3 +24,4 @@ Further improvements that can be done in the app:
 - Add a form component
 - Read hard coded text from constant files  
 - Intercept internal server errors like 500 and handle them in a user friendly way
+- Cleanup styles
